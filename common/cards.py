@@ -12,3 +12,4 @@ class Card(AddGP):
         pass
 
     def direct(self):
+        pass
