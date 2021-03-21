@@ -97,7 +97,7 @@ while true do
     if f ~= nil then
         io.close(f)
         i = 0
-        for line in io.lines("cc_status") do
+        for line in io.lines("cc_status.txt") do
             gui.text(20, 10 * (i + 1), line)
         end
     end
