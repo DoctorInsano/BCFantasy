@@ -16,6 +16,8 @@ memreads = {
     [0x3EC8] = 1,
     -- $2686-$2B85 Battle Inventory (256 + 8 items, 5 bytes each)
     [0x2686] = 0x2B85 - 0x2686,
+    -- event flags (currently unused)
+    [0x1E80] = 0x1EDF - 0x1E80,
 }
 
 -- Main loop
