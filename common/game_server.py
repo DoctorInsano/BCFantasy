@@ -80,7 +80,34 @@ _PROPERTIES = {
         "addr": 0x1860,
         "nbytes": 3,
         "docstring": "Get and set GP"
-    }
+    },
+    "espers": {
+        "addr": 0x1A69,
+        "nbytes": 3,
+        "docstring": "esper bit strings"
+    },
+    "party_commands": {
+        "addr": 0x1616,
+        "nbytes": 4,
+        "docstring": "ids of party commands"
+    },
+    "known_swdtech": {
+        "addr": 0x1CF7,
+        "docstring": "known swdtech bit string"
+    },
+    "known_blitzes": {
+        "addr": 0x1D28,
+        "docstring": "known blitz bit string"
+    },
+    "known_rages": {
+        "addr": 0x1D2C,
+        "nbytes": 0x1D4B - 0x1D2C,
+        "docstring": "known rages"
+    },
+    "known_dances": {
+        "addr": 0x1D4C,
+        "docstring": "known dance bit string"
+    },
 }
 
 def apply_properties(cls):
