@@ -108,6 +108,27 @@ _PROPERTIES = {
         "addr": 0x1D4C,
         "docstring": "known dance bit string"
     },
+    "world_xy_position": {
+        "addr": 0x1F60,
+        "nbytes": 2,
+        "docstring": "world map x / y position"
+    },
+    "airship_xy_position": {
+        "addr": 0x1F62,
+        "nbytes": 2,
+        "docstring": "world map airship x / y position"
+    },
+    "party_xy_position": {
+        "addr": 0x1FC0,
+        "nbytes": 2,
+        "docstring": "world map party x / y position"
+    },
+    "danger_counter": {
+        "addr": 0x1F6E,
+        "nbytes": 2,
+        "docstring": "threat counter"
+    }
+
 }
 
 def apply_properties(cls):
@@ -232,7 +253,6 @@ class GameManager(GameServer):
         else:
             self.hand[i].direct()
 
-
     def pick_card(self, cards):
         tier = self.tiering[random.randint(len(self.tiering))]
         # FIXME: How deterministic is this going to be?
@@ -242,5 +262,5 @@ class GameManager(GameServer):
 
 if __name__ == "__main__":
     server = GameServer()
-    server.bind()
+    server.create_connection()
     server.ping()
