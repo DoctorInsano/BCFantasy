@@ -1,5 +1,6 @@
 #import zmq
 from PyEmuhawk import SocketServer
+import random
 import logging
 
 class GameServer(SocketServer):
@@ -96,9 +97,14 @@ class GameManager(GameServer):
         self._event_flags = None
         self.tiering = None
 
+        # TODO: Get list of cards
         self.deck = self.shuffle_deck()
 
         self.hand = []
+
+    def _checkpoint(self, fname=None):
+        # use the property definitions?
+        pass
 
     def in_battle(self):
         # FIXME: We may want to do additional logic checks or recheck some values
@@ -146,6 +152,16 @@ class GameManager(GameServer):
             # set this to whatever it needs to be to not overwhelm the emu
             sleep(1.0)
 
+    def progress_tiering(self, ntiers=4):
+        # less tier variance, use min
+        # more tier variance
+        # The length of this will influence the speed of upgrade
+        self.tiering = self.tiering or [1, 1, 1, 1]
+        self.tiering[random.randint(ntiers)] += 1
+
+    def blank_char_slot(self, slot):
+        pass
+
     def map_resp_to_action(self, resp):
         # FIXME: check that select was pushed?
         if resp & 0x800:
@@ -181,7 +197,7 @@ class GameManager(GameServer):
                f"hand\n"
         for c in self.hand[:-1]:
             menu += f"\t[{c.label}]\n"
-        # Write to status file
+        # TODO: Write to status file
 
     def use_card(self, i):
         if i == -1:
@@ -189,16 +205,9 @@ class GameManager(GameServer):
         else:
             self.hand[i].direct()
 
-    def progress_tiering(self, ntiers=4):
-        # less tier variance, use min
-        # more tier variance
-        import random
-        # The length of this will influence the speed of upgrade
-        self.tiering = self.tiering or [1, 1, 1, 1]
-        self.tiering[random.randint(ntiers)] += 1
 
     def pick_card(self, cards):
-        tier = self.tiering[random.randint(ntiers)]
+        tier = self.tiering[random.randint(len(self.tiering))]
         # FIXME: How deterministic is this going to be?
         # We can add some randomness too...
         self.deck = sorted(cards, key=lambda c: c.tier - tier)
