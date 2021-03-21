@@ -120,12 +120,14 @@ class GameManager(GameServer):
 
         choice_processed = False
         while True:
+            self.present_menu()
+
             if self.check_new_event() != 0:
                 # we can look up the event, but it's not important right now
                 # FIXME: Check for multiple event fires
                 self.progress_tiering()
 
-                self.hand.append(self.deck.draw())
+                self.hand.append(self.pick_card(None))
 
                 # FIXME: implement checkpointing system
                 # maybe do this? Check if newer?
@@ -134,16 +136,32 @@ class GameManager(GameServer):
 
             elif not choice_processed:
                 # This will block on user input
-                resp = self.present_choice()
-
-                # handle resp
-
                 # Directly to file? New emulator command?
-
-                choice_processed = True
+                resp = int.from_bytes(self.get_inputs(), "big")
+                if resp:
+                    # handle resp
+                    self.map_resp_to_action(resp)
+                    choice_processed = True
 
             # set this to whatever it needs to be to not overwhelm the emu
             sleep(1.0)
+
+    def map_resp_to_action(self, resp):
+        # FIXME: check that select was pushed?
+        if resp & 0x800:
+            # buy_draw
+            pass
+        elif resp & 0x100:
+            for slot in range(4):
+                if resp & (0x1 << slot):
+                    # purch_char(slot)
+                    break
+        elif resp & 0x200:
+            for slot in range(4):
+                if resp & (0x1 << slot):
+                    # use_card(slot)
+                    break
+                #use_card(-1)
 
     def check_new_event(self):
         from common import event_flags
@@ -156,13 +174,14 @@ class GameManager(GameServer):
         return new_flags
 
     # this may become async
-    def present_choice(self):
+    def present_menu(self):
         menu = f"s + A + dir: purchase character\n" \
                f"s + Y: buy draw [{self.hand[-1].label}]\n" \
                f"s + B + dir: use card\n" \
                f"hand\n"
         for c in self.hand[:-1]:
             menu += f"\t[{c.label}]\n"
+        # Write to status file
 
     def use_card(self, i):
         if i == -1:
